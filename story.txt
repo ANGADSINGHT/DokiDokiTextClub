@@ -1,0 +1,15 @@
+scene|1
+{player}|idk what to say here
+choice|Go with monika/Go with natsuki/Go with Yuri|2/7/9
+
+scene|2
+monika|you went with me!
+
+scene|7
+natsuki|you went with me!
+
+scene|9
+yuri|you went with me!
+
+set|variable61|bruh
+log|variable61
