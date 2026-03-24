@@ -1,15 +1,25 @@
-names|Yuri/Monika/Natsuki/Sayori/Player
+names|Yuri/Monika/Natsuki/Sayori/:
 
 scene|1
 null|*An annoying girl is trying to catch up to you in the distance.*
-choice|Walk with her to school/Leave her hanging|2/7
+choice|Walk with her to school/walk to school alone|2/7
 
 scene|2
 null|*Your childhood friend catches up with you*
-Sayori|:.. wait for me next time... you know how i am!
-Player|How will you survive without me then?
-forward|7
+Sayori|:.. wait for me next time... you know how i am! soon enough you won't be walking with me anymore and we'll be at college!
+:|That's still ages away sayori... How will you survive without me then? im getting a little tired of waiting for you. you really gotta wake up earlier.
+forward|3
+
+scene|3
+Sayori|i can't help it :.. I like sleeping in haha... sorry
+Sayori|plus I always have to have breakfast!
+:|One day breakfast will be your downfall sayori. that's your one weakness haha!
+Sayori|That's a good weakness to have...
+forward|4
+
+scene|4
+angad|*we kiss*|SPECIAL
 
 scene|7
-null|[Master Angad] That's pretty much all I did lol. It's 6:07pm and thats all the coding that should be necessary I think. The rest is just scripting the.. script in this scripty ahh language. Hopefully you're reading this in science right now and we can get through more than one piece of dialog.
+null|*she gives up in her pursuit half way through as you can feel that the annoying girl felt dejected by this as her smile turns to a frown as you continue to school alone.*
 choice|Repeat|1
