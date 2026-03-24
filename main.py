@@ -14,6 +14,8 @@ bug_callouts = [
     "Idfk I ain't fixing this bug"
 ]
 
+special_names = {'vedanth': 0, 'andrew': 0, 'angad': 0, 'elliot': 0}
+
 
 def clear_screen():
     call(['clear' if osname != 'nt' else 'cls'], shell=True)
@@ -53,18 +55,18 @@ class Game:
                     scene_changed = True
                     break
 
-                elif line.startswith("CHOICE"):
-                    txt, nextscene = line.split('|', 1)
-                    dialog = txt[7:].replace(']', ' =').replace(':', self.name)
-                    print(f">> {dialog}")
-                    choices.append(int(nextscene))
-
-                elif any(line.startswith(f'[{name}]') for name in self.npcnames):  # noqa: E501
+                elif any(line.startswith(f'[{name}]') for name in self.npcnames) or line.startswith('*'):  # noqa: E501
 
                     line = line.replace(":", self.name)
 
                     await print_slow(line, 0.01)
                     input()
+
+                elif line.startswith("CHOICE"):
+                    txt, nextscene = line.split('|', 1)
+                    dialog = txt[7:].replace(']', ' =').replace(':', self.name)
+                    print(f">> {dialog}")
+                    choices.append(int(nextscene))
 
                 else:
                     print(line)
@@ -120,8 +122,11 @@ class Game:
                     self.story[scene].append(f"CHOICE[{i+1}] {options[i]}|{next_scenes[i]}")  # noqa: E501
             elif cmd == 'forward':
                 self.story[scene].append((parts[1]))
+            elif cmd in special_names and self.name in special_names:
+                if special_names[self.name] == special_names[cmd]:
+                    self.story[scene].append(f'[{cmd}] {parts[1]}')
             else:
-                if len(parts) > 1:
+                if len(parts) < 3 and len(parts) > 2 and parts[2] != 'SPECIAL':
                     self.story[scene].append(parts[1])
 
 
@@ -131,6 +136,7 @@ def main(name):
         print("Compiling story...")
 
         game.compile('story.txt')
+        # quit()
 
         print("-"*67)
         if not DEBUG:
@@ -140,11 +146,12 @@ def main(name):
         return 1
     except Exception as e:
         if DEBUG:
-            print("Looks like the game is crashing... lemme help you out!")
-            print(f"self.scene={game.scene}")
-            input("Press enter to raise the error and quit...")
-            raise e
-        return print(f"Failed to compile! Error: {e}")
+            print("-----------GAME CRASHING YOU IDIOT-----------")
+            print(f"Last scene: {game.scene}")
+
+        print(f"Failed to compile! Error: {e}")
+        input("Press enter to raise the error and quit...")
+        raise e
 
 
 if __name__ == "__main__":
