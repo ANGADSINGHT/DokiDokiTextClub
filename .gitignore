@@ -1,2 +1,6 @@
 .history
 .backup
+.spec
+
+build
+dist

@@ -1,7 +1,25 @@
 import asyncio
+import os
+import sys
+import shutil
+
 from subprocess import call
 from random import choice
-from os import name as osname
+
+
+def resource_path(path):
+    # Prefer local path if it exists (for dev mode and direct script execution)
+    if os.path.exists(path):
+        return path, 1
+
+    # Fallback to PyInstaller’s bundled resource path if present
+    if hasattr(sys, "_MEIPASS"):
+        bundled = os.path.join(sys._MEIPASS, path)
+        if os.path.exists(bundled):
+            return bundled, 2
+
+    # Last resort: return the path unchanged
+    return path, 0
 
 
 DEBUG = False
@@ -16,7 +34,7 @@ bug_callouts = [
 
 
 def clear_screen():
-    call(['clear' if osname != 'nt' else 'cls'], shell=True)
+    call(['clear' if os.name != 'nt' else 'cls'], shell=True)
 
 
 async def print_slow(text, delay=0.1):
@@ -90,8 +108,6 @@ class Game:
                     print("Please enter a number.")
 
     def compile(self, PATH="story.txt"):
-        # TODO: Check if story exists
-
         with open(PATH, 'r') as f:
             lines = f.readlines()
 
@@ -130,7 +146,22 @@ def main(name):
         game = Game(name)
         print("Compiling story...")
 
-        game.compile('story.txt')
+        path, code = resource_path('assets/story.txt')
+        if code in (0, 2):
+            os.makedirs('assets', exist_ok=True)
+            source = path
+            if code == 0 and not os.path.exists(path):
+                # fallback to root story.txt when asset path is missing
+                fallback = 'story.txt'
+                if os.path.exists(fallback):
+                    source = fallback
+                else:
+                    raise FileNotFoundError(f"No story file found at '{path}' or '{fallback}'")  # noqa: E501
+
+            shutil.copy(source, os.path.join('assets', 'story.txt'))
+            print(f"Copied story file from '{source}' to 'assets/story.txt'")
+
+        game.compile(path)
 
         print("-"*67)
         if not DEBUG:
